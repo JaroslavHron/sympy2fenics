@@ -59,9 +59,12 @@ def div(u):
             return w[0].diff('x') + w[1].diff('y')
         elif u.shape[0] == 3:
             return w[0].diff('x') + w[1].diff('y') + w[2].diff('z')
-    if u.shape[1] == 1:
-        # vector
+    if u.shape[1] == 1 and len(u.shape) == 2:
+        # column vector
         return vec_div(u)
+    elif u.shape[0] == 1 and len(u.shape) == 2:
+        # row vector
+        return vec_div(u.transpose())
     else:
         # matrix
         result = []
