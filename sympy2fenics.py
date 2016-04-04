@@ -16,15 +16,10 @@ def sympy2exp(exp):
         return to_ccode(exp)
 
 def infer_dim(u):
-    if not u.is_Matrix:
-        args = u.args
-    else:
-        args = set()
-        for exp in u[:]:
-            args = args.union(exp.args)
-    if sympy.sympify('z') in args:
+    atoms = u.atoms()
+    if sympy.sympify('z') in atoms:
         return 3
-    elif sympy.sympify('y') in args:
+    elif sympy.sympify('y') in atoms:
         return 2
     else:
         return 1    
