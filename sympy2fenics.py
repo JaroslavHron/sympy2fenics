@@ -81,6 +81,7 @@ def tr(u):
 def hess(u, dim = None):
     return grad(grad(u, dim), dim)
 
+eye = sympy.eye
 
 if __name__ == '__main__':
     u2 = sympy.sympify('x*y')
