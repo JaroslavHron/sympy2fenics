@@ -1,7 +1,9 @@
-from sympy import *
+from sympy import symbols, printing, sympify, Matrix, eye
+
 
 def sympy2exp(exp):
-    x, y, z = symbols('x[0] x[1] x[2]')    
+    x, y, z = symbols('x[0] x[1] x[2]')
+
     def to_ccode(f):
         f = f.subs('x', x).subs('y', y).subs('z', z)
         raw = printing.ccode(f)
@@ -15,6 +17,7 @@ def sympy2exp(exp):
     else:
         return to_ccode(exp)
 
+
 def infer_dim(u):
     atoms = u.atoms()
     if sympify('z') in atoms:
@@ -22,9 +25,10 @@ def infer_dim(u):
     elif sympify('y') in atoms:
         return 2
     else:
-        return 1    
-    
-def grad(u, dim = None):
+        return 1
+
+
+def grad(u, dim=None):
     if not dim:
         dim = infer_dim(u)
     # transpose first if it is a row vector
@@ -39,19 +43,22 @@ def grad(u, dim = None):
         return Matrix(
             [u.diff('x'), u.diff('y'), u.diff('z')]).transpose()
 
+
 def curl(u):
     if u.is_Matrix and min(u.args) == 1:
         # 3D vector curl
         return Matrix([u[2].diff('y') - u[1].diff('z'),
-                             u[0].diff('z') - u[2].diff('x'),
-                             u[1].diff('x') - u[0].diff('y')])
+                       u[0].diff('z') - u[2].diff('x'),
+                       u[1].diff('x') - u[0].diff('y')])
     else:
         # 2D rotated gradient
         return Matrix([u.diff('y'), -u.diff('x')])
 
+
 def rot(u):
     # 2d rot
     return u[1].diff('x') - u[0].diff('y')
+
 
 def div(u):
     def vec_div(w):
@@ -71,15 +78,19 @@ def div(u):
         for i in range(u.shape[1]):
             result.append(vec_div(u.row(i).transpose()))
         return Matrix(result)
-    
+
+
 def sym(u):
     return (u + u.transpose()) / 2.0
+
 
 def tr(u):
     return u.trace()
 
-def hess(u, dim = None):
+
+def hess(u, dim=None):
     return grad(grad(u, dim), dim)
+
 
 eye = eye
 
@@ -91,7 +102,7 @@ if __name__ == '__main__':
     v3 = Matrix(sympify('(x*y, y*x, x*y*z)'))
     w3 = Matrix(sympify(
         """
-        ((x*y,    sin(y), z), 
+        ((x*y,    sin(y), z),
          (cos(x), pi*y^2, y),
          (z*x,    x*y*z,  x))
         """))
