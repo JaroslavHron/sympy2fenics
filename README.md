@@ -11,13 +11,14 @@ Only `sympy`.
 Example
 -------
 
-    u = sympy.Matrix(sympy.sympify("""
-        (sin(pi*x)*sin(pi*y), 
+    u = sympy.Matrix(sympy.sympify(
+    """
+        (sin(pi*x)*sin(pi*y),
          x*(1.0-x)*y*(1.0-y))
         """))
 
     print("divergence of u:")
-    print(sympy2exp(div(u)))
+    print(sympy2exp(Div(u)))
 
     print("symmetric gradient of u:")
-    print(sympy2exp(sym(grad(u.transpose(), dim = 2))))
+    print(sympy2exp(Sym(Grad(u.transpose()))))

@@ -7,8 +7,8 @@ def sympy2exp(exp):
     def to_ccode(f):
         f = f.subs('x', x).subs('y', y).subs('z', z)
         raw = printing.ccode(f)
-        return raw.replace("M_PI", "pi")
-    if hasattr(exp, "__getitem__"):
+        return raw.replace('M_PI', 'pi')
+    if hasattr(exp, '__getitem__'):
         if exp.shape[0] == 1 or exp.shape[1] == 1:
             return tuple(map(to_ccode, exp))
         else:
@@ -18,7 +18,7 @@ def sympy2exp(exp):
         return to_ccode(exp)
 
 
-def infer_dim(u):
+def _infer_dim(u):
     atoms = u.atoms()
     if sympify('z') in atoms:
         return 3
@@ -28,9 +28,9 @@ def infer_dim(u):
         return 1
 
 
-def grad(u, dim=None):
+def Grad(u, dim=None):
     if not dim:
-        dim = infer_dim(u)
+        dim = _infer_dim(u)
     # transpose first if it is a row vector
     if u.is_Matrix and u.shape[0] != 1:
         u = u.transpose()
@@ -44,7 +44,7 @@ def grad(u, dim=None):
             [u.diff('x'), u.diff('y'), u.diff('z')]).transpose()
 
 
-def curl(u):
+def Curl(u):
     if u.is_Matrix and min(u.args) == 1:
         # 3D vector curl
         return Matrix([u[2].diff('y') - u[1].diff('z'),
@@ -55,12 +55,12 @@ def curl(u):
         return Matrix([u.diff('y'), -u.diff('x')])
 
 
-def rot(u):
+def Rot(u):
     # 2d rot
     return u[1].diff('x') - u[0].diff('y')
 
 
-def div(u):
+def Div(u):
     def vec_div(w):
         if w.shape[0] == 2:
             return w[0].diff('x') + w[1].diff('y')
@@ -80,19 +80,19 @@ def div(u):
         return Matrix(result)
 
 
-def sym(u):
+def Sym(u):
     return (u + u.transpose()) / 2.0
 
 
-def tr(u):
+def Tr(u):
     return u.trace()
 
 
-def hess(u, dim=None):
+def Hess(u, dim=None):
     return grad(grad(u, dim), dim)
 
 
-eye = eye
+Eye = eye
 
 if __name__ == '__main__':
     u2 = sympify('x*y')
