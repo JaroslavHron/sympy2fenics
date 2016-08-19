@@ -64,7 +64,7 @@ def Div(u):
     def vec_div(w):
         if w.shape[0] == 2:
             return w[0].diff('x') + w[1].diff('y')
-        elif u.shape[0] == 3:
+        elif w.shape[0] == 3:
             return w[0].diff('x') + w[1].diff('y') + w[2].diff('z')
     if u.shape[1] == 1 and len(u.shape) == 2:
         # column vector
